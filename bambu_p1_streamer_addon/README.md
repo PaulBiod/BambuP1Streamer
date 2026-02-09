@@ -88,10 +88,10 @@ Do not start it yet
 3️⃣ Configure the add-on
 
 Open the Configuration tab and enter:
-
+```yaml
 printer_address: 192.168.1.50
 printer_access_code: 12345678
-
+```
 
 Where:
 
@@ -106,14 +106,14 @@ Once started, the camera stream becomes available.
 🔍 Test the camera stream
 
 From a browser:
-
+```yaml
 http://<HOME_ASSISTANT_IP>:1985/
-
+```
 
 Or directly (recommended):
-
+```yaml
 http://<HOME_ASSISTANT_IP>:1985/api/stream.mjpeg?src=p1s
-
+```
 
 If you see the video → the add-on is working.
 
@@ -129,24 +129,24 @@ irregular MJPEG streams
 1️⃣ Add the stream to go2rtc (inside Frigate)
 
 In frigate.yml:
-
+```yaml
 go2rtc:
   streams:
     bambulab:
       - http://192.168.1.135:1985/api/stream.mjpeg?src=p1s
-
+```
 
 Restart Frigate.
 
 Test in a browser:
-
+```yaml
 http://<HOME_ASSISTANT_IP>:1984/stream.html?src=bambulab
-
+```
 (Optional) Add the camera to Frigate (view-only)
 
 If you want the camera to appear in the Frigate UI
 or use /api/<camera> endpoints:
-
+```yaml
 cameras:
   bambulab:
     enabled: true
@@ -162,14 +162,15 @@ cameras:
       enabled: false
     snapshots:
       enabled: false
-
+```
 
 ⚠️ Never enable detection on this camera.
 
 📺 Display on a TV (recommended)
 MJPEG (most compatible)
+```yaml
 http://<HOME_ASSISTANT_IP>:1984/api/stream.mjpeg?src=bambulab
-
+```
 
 Works very well for:
 
