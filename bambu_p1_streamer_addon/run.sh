@@ -27,7 +27,7 @@ echo "Using lib: ${LIB_PATH}"
 
 cat > /dev/shm/go2rtc.yaml <<EOF
 api:
-  listen: ":1985"
+  listen: "0.0.0.0:1985"
 
 rtsp:
   listen: ""
