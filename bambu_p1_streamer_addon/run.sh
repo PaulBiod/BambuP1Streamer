@@ -1,20 +1,20 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
-PRINTER_ADDRESS=$(jq -r '.printer_address' /data/options.json)
-PRINTER_ACCESS_CODE=$(jq -r '.printer_access_code' /data/options.json)
-
-if [ -z "$PRINTER_ADDRESS" ] || [ "$PRINTER_ADDRESS" = "null" ]; then
+if [ -z "$PRINTER_ADDRESS" ]; then
   echo "ERROR: printer_address manquant"
   exit 1
 fi
-if [ -z "$PRINTER_ACCESS_CODE" ] || [ "$PRINTER_ACCESS_CODE" = "null" ]; then
+
+if [ -z "$PRINTER_ACCESS_CODE" ]; then
   echo "ERROR: printer_access_code manquant"
   exit 1
 fi
 
-export PRINTER_ADDRESS
-export PRINTER_ACCESS_CODE
+LIB_PATH="/app/bambu_plugin/libBambuSource.so"
 
-echo "Starting BambuP1Streamer for ${PRINTER_ADDRESS}"
-exec /app/BambuP1Streamer
+echo "Starting BambuP1Streamer for $PRINTER_ADDRESS"
+
+/app/BambuP1Streamer "$LIB_PATH" "$PRINTER_ADDRESS" "$PRINTER_ACCESS_CODE" &
+
+exec /app/go2rtc
