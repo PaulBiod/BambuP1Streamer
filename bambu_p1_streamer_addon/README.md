@@ -9,6 +9,7 @@
 This document explains **how to use the Bambu P1 camera inside Home Assistant**,
 especially with **Frigate / go2rtc** and for **display on a TV**.
 
+“This add-on starts an internal go2rtc instance used only as a producer.”
 ---
 
 ## 🎯 What this add-on does
