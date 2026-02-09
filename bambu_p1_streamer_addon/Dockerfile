@@ -20,5 +20,4 @@ RUN wget -q -O /app/go2rtc https://github.com/AlexxIT/go2rtc/releases/download/v
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-
 CMD ["/run.sh"]
