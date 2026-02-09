@@ -223,3 +223,111 @@ Home Assistant & Frigate communities
 ❌ It is not suitable for detection
 ✅ go2rtc + view-only = stable & reliable
 🎯 Perfect for print monitoring and TV display
+
+
+---
+
+
+## 📺 Display the stream on a TV with **PiPup** (recommended)
+
+This setup lets you display the Bambu camera stream as a **Picture-in-Picture (PiP)** overlay on a TV.
+
+### ✅ Prerequisites (PiPup)
+
+- Install **PiPup** on your TV / Android TV device
+- Ensure PiPup shows something like: `The server is running on: <TV_IP>:7979`
+- Your Home Assistant must be able to reach that IP/port
+
+PiPup project: https://github.com/rogro82/pipup
+
+---
+
+## 1) Choose the stream URL (MJPEG)
+
+**MJPEG is the most compatible** with TVs (HLS often opens a player that fails).
+
+### Option A — via Frigate go2rtc (port 1984)
+```text
+http://<HOME_ASSISTANT_IP>:1984/api/stream.mjpeg?src=bambulab
+```
+
+### Option B — directly from this add-on (port 1985)
+```text
+http://<HOME_ASSISTANT_IP>:1985/api/stream.mjpeg?src=p1s
+```
+
+## 2) Add the rest_command (Home Assistant)
+
+Create or edit rest_commands.yaml:
+```yaml
+pipup_url_on_tv:
+  url: http://192.168.1.31:7979/notify  # <-- PiPup server shown on the TV screen
+  content_type: "application/json"
+  verify_ssl: false
+  method: post
+  timeout: 20
+  payload: >
+    {
+      "duration": {{ duration | default(20) }},
+      "position": {{ position | default(0) }},
+      "title": "{{ title | default('') }}",
+      "titleColor": "{{ titleColor | default('#50BFF2') }}",
+      "titleSize": {{ titleSize | default(10) }},
+      "message": "{{ message | default('') }}",
+      "messageColor": "{{ messageColor | default('#fbf5f5') }}",
+      "messageSize": {{ messageSize | default(14) }},
+      "backgroundColor": "{{ backgroundColor | default('#0f0e0e') }}",
+      "media": {
+        "web": {
+          "uri": "{{ url }}",
+          "width": {{ width | default(640) }},
+          "height": {{ height | default(480) }}
+        }
+      }
+    }
+```
+
+And make sure Home Assistant loads it in configuration.yaml:
+```yaml
+rest_command: !include rest_commands.yaml
+```
+
+## 3) Create a reusable script (Home Assistant)
+
+```yaml
+alias: PIP video on TV
+sequence:
+  - if:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: media_player.philips_tv_2
+            state: "off"
+    then:
+      - action: rest_command.pipup_url_on_tv
+        data:
+          title: "{{ title }}"
+          message: "{{ message }}"
+          width: 640
+          height: 480
+          url: "{{ url }}"
+```
+
+## 4) Example automation / button call
+Using the add-on (port 1985):
+```yaml
+action: script.pip_video_on_tv
+data:
+  title: "Bambu P1S"
+  message: "Print monitoring"
+  url: "http://192.168.1.135:1985/api/stream.mjpeg?src=p1s"
+```
+
+Or using Frigate go2rtc (port 1984):
+```yaml
+action: script.pip_video_on_tv
+data:
+  title: "Bambu P1S"
+  message: "Print monitoring"
+  url: "http://192.168.1.135:1984/api/stream.mjpeg?src=bambulab"
+```
