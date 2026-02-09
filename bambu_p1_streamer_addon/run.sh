@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+PRINTER_ADDRESS="$(jq -r '.printer_address // empty' /data/options.json)"
+PRINTER_ACCESS_CODE="$(jq -r '.printer_access_code // empty' /data/options.json)"
+
 if [ -z "$PRINTER_ADDRESS" ]; then
   echo "ERROR: printer_address manquant"
   exit 1
@@ -11,10 +14,22 @@ if [ -z "$PRINTER_ACCESS_CODE" ]; then
   exit 1
 fi
 
-LIB_PATH="/app/bambu_plugin/libBambuSource.so"
+# Trouve la lib (au cas où le zip change de structure)
+LIB_PATH="$(find /app -name libBambuSource.so 2>/dev/null | head -n 1)"
 
-echo "Starting BambuP1Streamer for $PRINTER_ADDRESS"
+if [ -z "$LIB_PATH" ]; then
+  echo "ERROR: libBambuSource.so introuvable"
+  exit 1
+fi
 
-/app/BambuP1Streamer "$LIB_PATH" "$PRINTER_ADDRESS" "$PRINTER_ACCESS_CODE" &
+echo "Starting go2rtc for P1S at ${PRINTER_ADDRESS}"
+echo "Using lib: ${LIB_PATH}"
 
-exec /app/go2rtc
+cat > /dev/shm/go2rtc.yaml <<EOF
+api:
+  listen: ":1984"
+streams:
+  p1s: "exec:/app/BambuP1Streamer ${LIB_PATH} ${PRINTER_ADDRESS} ${PRINTER_ACCESS_CODE}"
+EOF
+
+exec /app/go2rtc -config /dev/shm/go2rtc.yaml
