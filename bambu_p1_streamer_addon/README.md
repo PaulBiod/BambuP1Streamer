@@ -75,9 +75,9 @@ Settings → Add-ons
 ⋮ → Repositories
 
 Add this repository URL:
-ˋˋˋ
+```yaml
 https://github.com/PaulBiod/BambuP1Streamer
-ˋˋˋ
+```
 
 2️⃣ Install the add-on
 
