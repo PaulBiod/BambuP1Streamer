@@ -27,14 +27,13 @@ echo "Using lib: ${LIB_PATH}"
 
 cat > /dev/shm/go2rtc.yaml <<EOF
 api:
-  listen: ":1985"
+  listen: "127.0.0.1:1985"
 
 rtsp:
-  listen: ""   # désactivé
+  listen: ""
 
 streams:
   p1s: "exec:/app/BambuP1Streamer ${LIB_PATH} ${PRINTER_ADDRESS} ${PRINTER_ACCESS_CODE}"
 EOF
-
 
 exec /app/go2rtc -config /dev/shm/go2rtc.yaml
