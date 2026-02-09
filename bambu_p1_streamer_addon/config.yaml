@@ -1,6 +1,6 @@
 name: "Bambu P1 Streamer"
 slug: "bambu_p1_camera_streamer"
-version: "0.1.4"
+version: "0.1.5"
 description: " Expose the built-in camera of Bambu Lab P1S / P1P printers as a video stream for Home Assistant. Designed for print monitoring (view-only), Frigate / go2rtc integration and TV display. Detection is not supported."
 arch:
   - amd64
