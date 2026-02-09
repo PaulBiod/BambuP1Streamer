@@ -8,7 +8,7 @@ startup: services
 boot: auto
 host_network: true
 ports:
-  1984/tcp: 1984
+  1984/tcp: 1985
 options:
   printer_address: ""
   printer_access_code: ""
