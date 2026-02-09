@@ -1,0 +1,17 @@
+name: "Bambu P1 Streamer"
+slug: "bambu_p1_streamer"
+version: "0.1.0"
+description: "Bambu P1S camera streamer (go2rtc) for HAOS amd64"
+arch:
+  - amd64
+startup: services
+boot: auto
+host_network: true
+ports:
+  1984/tcp: 1984
+options:
+  printer_address: ""
+  printer_access_code: ""
+schema:
+  printer_address: str
+  printer_access_code: password
